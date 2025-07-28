@@ -1,4 +1,4 @@
-name: Patch 470
+name: Patch Nvidia Drivers
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  patch:
+  Patch 470:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,4 +38,28 @@ jobs:
         with:
           name: Nvidia-470-Patched
           path: NVIDIA-Linux-x86_64-470.256.02/*
+
+    Patch 390:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Download and Extract NVIDIA 470
+          run: |
+            curl "https://us.download.nvidia.com/XFree86/Linux-x86_64/390.157/NVIDIA-Linux-x86_64-390.157.run" > NVIDIA-Linux-x86_64-390.157.run
+            sh NVIDIA-Linux-x86_64-470.256.02.run --extract-only
+
+        - name: Patch 470
+          run: |
+            cd NVIDIA-Linux-x86_64-390.157
+
+            curl "https://gist.githubusercontent.com/Vigilans/eb54564f83ed065f5dc1000abc3db6af/raw/dee118e49e074b0b9cf5e25629f78f489d82a273/nvidia-graphics-drivers-legacy-390xx-kernel-6.4.patch" | patch -Np1 -d kernel
+            curl "https://gist.githubusercontent.com/joanbm/dfe8dc59af1c83e2530a1376b77be8ba/raw/37ff2b5ccf99f295ff958c9a44ca4ed4f42503b4/nvidia-470xx-fix-linux-6.5.patch" | patch -Np1 -d kernel
+
+        - name: Upload a Build Artifact
+          uses: actions/upload-artifact@v4.6.2
+          with:
+            name: Nvidia-390-Patched
+            path: NVIDIA-Linux-x86_64-390.157/*
           
