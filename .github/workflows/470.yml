@@ -1,31 +1,41 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Patch 470
 
-# Controls when the workflow will run
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  patch:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Download NVIDIA 470
+      - name: Download and Extract NVIDIA 470
         run: |
           curl "https://us.download.nvidia.com/XFree86/Linux-x86_64/470.256.02/NVIDIA-Linux-x86_64-470.256.02.run" > NVIDIA-Linux-x86_64-470.256.02.run
           sh NVIDIA-Linux-x86_64-470.256.02.run --extract-only
+
+      - name: Patch 470
+        run: |
+          cd NVIDIA-Linux-x86_64-470.256.02
+
+          curl "https://aur.archlinux.org/cgit/aur.git/plain/0001-Fix-conftest-to-ignore-implicit-function-declaration.patch?h=nvidia-470xx-utils&id=df0426ab325cb0ad8909a3058d66336ce1f872ce" | patch -Np1 -d kernel
+          curl "https://aur.archlinux.org/cgit/aur.git/plain/0002-Fix-conftest-to-use-a-short-wchar_t.patch?h=nvidia-470xx-utils&id=df0426ab325cb0ad8909a3058d66336ce1f872ce" | patch -Np1 -d kernel
+          curl "https://aur.archlinux.org/cgit/aur.git/plain/0003-Fix-conftest-to-use-nv_drm_gem_vmap-which-has-the-se.patch?h=nvidia-470xx-utils&id=df0426ab325cb0ad8909a3058d66336ce1f872ce" | patch -Np1 -d kernel
+          curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.10.patch?h=nvidia-470xx-utils&id=df0426ab325cb0ad8909a3058d66336ce1f872ce" | patch -Np1 -d kernel
+          curl "https://gist.githubusercontent.com/joanbm/a6d3f7f873a60dec0aa4a734c0f1d64e/raw/6bae5606c033b6c6c08233523091992370e357b7/nvidia-470xx-fix-linux-6.12.patch" | patch -Np1 -d kernel
+          curl "https://gist.githubusercontent.com/joanbm/d1f89391a4b20f4b56ba931ef6ca62da/raw/8458c7c58249a0dceb5ab1b5aada7e705a88b4ff/nvidia-470xx-fix-linux-6.13.patch" | patch -Np1 -d kernel
+          curl "https://gist.githubusercontent.com/joanbm/d0cb8790ca610fbd2c2e43f30707ce18/raw/acdef6aac381bf6d8a21d095b673b644a188c2b9/nvidia-470xx-fix-linux-6.14.patch" | patch -Np1 -d kernel
+          curl "https://gist.githubusercontent.com/joanbm/def2bf57ed7a799c1d84a67606459314/raw/1919a4b3797b57dd039c8019ec767e25bd295c31/nvidia-470xx-fix-linux-6.15.patch" | patch -Np1 -d kernel
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: Nvidia-470-Patched
+          path: NVIDIA-Linux-x86_64-470.256.02/*
+          
