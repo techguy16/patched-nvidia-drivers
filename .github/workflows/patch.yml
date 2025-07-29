@@ -37,7 +37,7 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: Nvidia-470.256.02-Patched-${{ github.sha }}
+          name: Nvidia-470.256.02-Patched
           path: NVIDIA-Linux-x86_64-470.256.02/*
 
   patch-390:
@@ -72,6 +72,6 @@ jobs:
         - name: Upload NVIDIA 390 Driver
           uses: actions/upload-artifact@v4.6.2
           with:
-            name: NVIDIA-390.157-Patched-${{ github.sha }}
+            name: NVIDIA-390.157-Patched
             path: NVIDIA-Linux-x86_64-390.157/*
           
