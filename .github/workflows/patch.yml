@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Patch 470:
+  patch-470:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +39,7 @@ jobs:
           name: Nvidia-470-Patched
           path: NVIDIA-Linux-x86_64-470.256.02/*
 
-    Patch 390:
+  patch-390:
       runs-on: ubuntu-latest
 
       steps:
