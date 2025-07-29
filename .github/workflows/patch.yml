@@ -10,6 +10,7 @@ on:
 
 jobs:
   patch-470:
+    name: 470.256.02
     runs-on: ubuntu-latest
 
     steps:
@@ -36,30 +37,41 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: Nvidia-470-Patched
+          name: Nvidia-470.256.02-Patched-${{ github.sha }}
           path: NVIDIA-Linux-x86_64-470.256.02/*
 
   patch-390:
+      name: 390.157
       runs-on: ubuntu-latest
 
       steps:
         - uses: actions/checkout@v4
 
-        - name: Download and Extract NVIDIA 470
+        - name: Download and Extract NVIDIA 390
           run: |
             curl "https://us.download.nvidia.com/XFree86/Linux-x86_64/390.157/NVIDIA-Linux-x86_64-390.157.run" > NVIDIA-Linux-x86_64-390.157.run
-            sh NVIDIA-Linux-x86_64-470.256.02.run --extract-only
+            sh NVIDIA-Linux-x86_64-390.157.run --extract-only
 
-        - name: Patch 470
+        - name: Patch 390
           run: |
             cd NVIDIA-Linux-x86_64-390.157
 
-            curl "https://gist.githubusercontent.com/Vigilans/eb54564f83ed065f5dc1000abc3db6af/raw/dee118e49e074b0b9cf5e25629f78f489d82a273/nvidia-graphics-drivers-legacy-390xx-kernel-6.4.patch" | patch -Np1 -d kernel
-            curl "https://gist.githubusercontent.com/joanbm/dfe8dc59af1c83e2530a1376b77be8ba/raw/37ff2b5ccf99f295ff958c9a44ca4ed4f42503b4/nvidia-470xx-fix-linux-6.5.patch" | patch -Np1 -d kernel
-
-        - name: Upload a Build Artifact
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-4.16+-memory-encryption.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.2.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.3.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.4.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.5.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.6.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.8.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.10.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.12.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.13.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.14.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            curl "https://aur.archlinux.org/cgit/aur.git/plain/kernel-6.15.patch?h=nvidia-390xx-utils" | patch -Np1 -d .
+            
+        - name: Upload NVIDIA 390 Driver
           uses: actions/upload-artifact@v4.6.2
           with:
-            name: Nvidia-390-Patched
+            name: NVIDIA-390.157-Patched-${{ github.sha }}
             path: NVIDIA-Linux-x86_64-390.157/*
           
